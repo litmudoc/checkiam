@@ -39,7 +39,7 @@ def keys_filter(username, arn, days):
                         "user_name": username,
                         "user_arn": arn,
                         "create_key_date": create_key_date.strftime("%Y-%m-%d %H:%M:%S"),
-                        "create_key_ago": age.days,
+                        "create_key_age": age.days,
                         "create_key_desc": f"It created {age.days} days ago!!"
                     }
     except Exception as e:
