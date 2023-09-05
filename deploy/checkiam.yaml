@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-credentials
+data:
+  aws_access_key_id: ___AWS_ACCESS_KEY_ID___
+  aws_secret_access_key: ___AWS_SECRET_ACCESS_KEY___
+  aws_default_region: ___AWS_DEFAULT_REGION___
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkiam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: checkiam
+  template:
+    metadata:
+      labels:
+        app: checkiam
+    spec:
+      containers:
+        - name: myapp
+          image: checkiam:dev
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          env:
+            - name: ENVIRONMENT
+              value: "dev"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_secret_access_key
+            - name: AWS_DEFAULT_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_default_region
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkiam-service
+spec:
+  selector:
+    app: checkiam
+  ports:
+    - name: http
+      nodePort: 30080
+      port: 80
+      targetPort: 5000
+      protocol: TCP
+  type: NodePort
+---
+
