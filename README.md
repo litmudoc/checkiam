@@ -22,7 +22,7 @@ API 서버는 Python으로 작성되었으며 아래 환경에서 작성 및 테
 * `AWS Access Key`, `Secret Key`가 준비 되어 있어야 합니다.
 * `docker` 명령어가 사용 가능해야 합니다. (도커 컨테이너의 생성이 가능해야 합니다.)
 * `kubectl` 명령어가 사용 가능해야 합니다. (쿠버네티스에 배포가 가능해야 합니다.)
-* `python3`, `git`, `base64`, `awk`, `curl`, `open` 등의 명령어가 사용 가능해야 합니다.
+* `python3`, `git`, `base64`, `sed`, `awk`, `curl`, `open` 등의 명령어가 사용 가능해야 합니다.
 
 ----------------------
 
@@ -150,6 +150,7 @@ checkiam     dev       8c34269b42b9   4 minutes ago   260MB
 ```
 
 ### 4. Deploy k8s deployment (with .env)
+.env의 내용으로 manifest의 내용을 수정하면서 k8s에 배포 합니다.
 ```bash
 ~/shoespic $ sed "s#___AWS_ACCESS_KEY_ID___#`awk -F '=' '/AWS_ACCESS_KEY_ID/ {print $2}' ./.env | base64`#g" ./deploy/checkiam.yaml| \
 sed "s#___AWS_SECRET_ACCESS_KEY___#`awk -F '=' '/AWS_SECRET_ACCESS_KEY/ {print $2}' ./.env | base64`#g" | \
@@ -199,9 +200,10 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 </ul>
 
 ### 6. K8s Cleanup
-배포된 쿠버네티스 리소스들을 삭제 합니다.
+배포된 쿠버네티스 리소스와 도커 이미지를 삭제 합니다.
 ```bash
 ~/shoespic $ kubectl delete -f deploy/checkiam.yaml
+~/shoespic $ docker rmi checkiam:dev
 
 ```
 
