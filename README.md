@@ -71,16 +71,15 @@ fba77de791de   checkiam:dev   "uvicorn app.main:ap…"   5 minutes ago   Up 5 mi
 #### Use: `curl` command
 
 ```bash
-~/shoespic $ curl -X 'POST' \
+~/shoespic $ curl -X 'GET' \
   'http://127.0.0.1:30080/old-key-age?days=90' \
-  -H 'accept: application/json' \
-  -d ''
+  -H 'accept: application/json'
 ```
 
 #### Use: Swagger UI
 Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다. 
 ``` bash
-~/shoespic $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_post
+~/shoespic $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_get
 ```
 
 #### Response: Body
@@ -164,16 +163,15 @@ kubectl apply -f -
 #### Use: `curl` command
 
 ```bash
-~/shoespic $ curl -X 'POST' \
+~/shoespic $ curl -X 'GET' \
   'http://127.0.0.1:30080/old-key-age?days=90' \
-  -H 'accept: application/json' \
-  -d ''
+  -H 'accept: application/json'
 ```
 
 #### Use: Swagger UI
 Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다. 
 ``` bash
-~/shoespic $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_post
+~/shoespic $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_get
 ```
 
 #### Response: Body
@@ -256,10 +254,9 @@ AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
 ## `curl` 로 테스트 합니다.
 
 ```bash
-~/shoespic $ curl -X 'POST' \
+~/shoespic $ curl -X 'GET' \
   'http://127.0.0.1:5000/old-key-age?days=90' \
-  -H 'accept: application/json' \
-  -d ''
+  -H 'accept: application/json'
 ```
 
 ## Swagger 웹 UI로 테스트 합니다.
