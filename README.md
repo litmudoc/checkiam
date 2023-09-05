@@ -5,7 +5,7 @@ shoespic assesments
 $ docker build -t checkiam:dev .
 
 ## docker run with env (configure .env, need access keys!!)
-$ docker run -d --env-file ./.env --name checkiam -p 5000:80 checkiam:dev
+$ docker run -d --env-file ./.env --name checkiam -p 80:5000 checkiam:dev
 
 ## Dev command 
 $ uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload

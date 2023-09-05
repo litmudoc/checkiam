@@ -10,7 +10,7 @@ from fastapi import FastAPI
 try:
     aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
     aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-    aws_region = os.getenv("AWS_REGION", "ap-northeast-2")
+    aws_region = os.getenv("AWS_DEFAULT_REGION", "ap-northeast-2")
 except Exception as e:
     print(f"OS의 환경변수에서 Access key를 가져 올 수 없습니다. 오류: {str(e)}")
 
