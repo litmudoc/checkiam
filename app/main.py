@@ -63,7 +63,7 @@ def get_users_old_access_keys(days=90):
     return old_keys_info
 
 
-@app.post("/old-key-age")
+@app.get("/old-key-age")
 async def list_old_access_keys(days: int):
     old_keys_info = get_users_old_access_keys(days)
     return {"old_created_keys": old_keys_info}
