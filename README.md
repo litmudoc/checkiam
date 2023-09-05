@@ -150,7 +150,7 @@ checkiam     dev       8c34269b42b9   4 minutes ago   260MB
 ```
 
 ### 4. Deploy k8s deployment (with .env)
-.env의 내용으로 manifest의 내용을 수정하면서 k8s에 배포 합니다.
+k8s에 배포될때 민감정보가 노출되지 않도록 스크립트로 배포 합니다.
 ```bash
 ~/shoespic $ sed "s#___AWS_ACCESS_KEY_ID___#`awk -F '=' '/AWS_ACCESS_KEY_ID/ {print $2}' ./.env | base64`#g" ./deploy/checkiam.yaml| \
 sed "s#___AWS_SECRET_ACCESS_KEY___#`awk -F '=' '/AWS_SECRET_ACCESS_KEY/ {print $2}' ./.env | base64`#g" | \
@@ -212,8 +212,8 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 ----------------------
 # # :fire: Development
 
-* `!! 주의 !!` 리포지터리에 Access, Secret Key 등의 민감 정보가 저장되지 않도록 하세요.
-* `.gitignore`에서 민감정보가 저장된 `.env`가 무시 되도록 합니다.
+* `!! 주의 !!` 리포지터리에 Access, Secret Key 등의 보안 정보가 저장되지 않도록 하세요.
+* `.gitignore`에서 보안키가 저장된 `.env`가 무시 되도록 합니다.
 
 <ul>
 
