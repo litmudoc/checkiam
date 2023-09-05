@@ -8,9 +8,10 @@ from fastapi import FastAPI
 
 # AWS 계정 정보 설정
 try:
-    aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
-    aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-    aws_region = os.getenv("AWS_DEFAULT_REGION", "ap-northeast-2")
+    # k8s secret 환경 변수 사용시 리턴이 입력되는 문제 => .strip("\n" 로 처리함
+    aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"].strip("\n")
+    aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"].strip("\n")
+    aws_region = os.getenv("AWS_DEFAULT_REGION", "ap-northeast-2").strip("\n")
 except Exception as e:
     print(f"OS의 환경변수에서 Access key를 가져 올 수 없습니다. 오류: {str(e)}")
 
