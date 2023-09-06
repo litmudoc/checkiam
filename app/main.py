@@ -24,15 +24,8 @@ now = datetime.now(timezone.utc)
 # API 서버 초기화.
 app = FastAPI()
 
-TIME_CONVERSION = {
-    "days": 86400,
-    "hours": 3600,
-    "mins": 60,
-    "seconds": 1,
-}
 
-
-def convert_seconds(seconds):
+def convert_seconds(seconds):  # 초를 입력 받아 사람이 보기 좋은 포맷으로 변환 합니다
     days, seconds = divmod(seconds, 86400)  # 일수 변환
     hours, seconds = divmod(seconds, 3600)  # 시간 변환
     minutes, seconds = divmod(seconds, 60)  # 분 변환
@@ -52,7 +45,7 @@ def convert_seconds(seconds):
     return result
 
 
-def keys_filter(username, arn, age_seconds):
+def keys_filter(username, arn, age_seconds):  # 입력된 시간보다 오래된 키 정보를 반환합니다.
     try:
         user_info = {}
         user_key_list = iam_client.list_access_keys(UserName=username)
@@ -76,6 +69,7 @@ def keys_filter(username, arn, age_seconds):
     return user_info
 
 
+# 인수가 없으면 기본값을 90일(777600초)이 지난 키를 가져오도록 실행 합니다.
 def get_users_old_access_keys(age_seconds=7776000):
     try:
         old_keys_info = []
@@ -91,7 +85,7 @@ def get_users_old_access_keys(age_seconds=7776000):
     return old_keys_info
 
 
-@app.get("/old-key-age/")
+@app.get("/old-key-age/")  # 쿼리가 없으면 None을 기본값으로 합니다.
 async def list_old_access_keys(
         days: int = Query(None, title="Days", description="Number of days"),
         hours: int = Query(None, title="Hours", description="Number of hours"),
@@ -102,6 +96,7 @@ async def list_old_access_keys(
     age_seconds = 0
     input_times = [days, hours, mins, seconds]
     conversions = [86400, 3600, 60, 1]  # 일, 시간, 분, 초의 변환값
+    # 쿼리로 받아온 값이 있으면 모두 초로 변환해서 더합니다.
     for unit, conversion in zip(input_times, conversions):
         if unit is not None:
             age_seconds += unit * conversion
