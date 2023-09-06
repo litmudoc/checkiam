@@ -4,7 +4,7 @@
 import os
 from datetime import datetime, timezone
 import boto3
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
 # AWS 계정 정보 설정
 try:
@@ -24,8 +24,35 @@ now = datetime.now(timezone.utc)
 # API 서버 초기화.
 app = FastAPI()
 
+TIME_CONVERSION = {
+    "days": 86400,
+    "hours": 3600,
+    "mins": 60,
+    "seconds": 1,
+}
 
-def keys_filter(username, arn, days):
+
+def convert_seconds(seconds):
+    days, seconds = divmod(seconds, 86400)  # 일수 변환
+    hours, seconds = divmod(seconds, 3600)  # 시간 변환
+    minutes, seconds = divmod(seconds, 60)  # 분 변환
+    readable = []
+    if days > 0:
+        readable.append(f"{days} Days")
+    if hours > 0:
+        readable.append(f"{hours} Hours")
+    if minutes > 0:
+        readable.append(f"{minutes} Mins")
+    if seconds > 0:
+        readable.append(f"{seconds} Seconds")
+    if readable:
+        result = ", ".join(readable)
+    else:
+        result = "0 Second"
+    return result
+
+
+def keys_filter(username, arn, age_seconds):
     try:
         user_info = {}
         user_key_list = iam_client.list_access_keys(UserName=username)
@@ -33,29 +60,30 @@ def keys_filter(username, arn, days):
             for key in user_key_list['AccessKeyMetadata']:
                 create_key_date = key['CreateDate']
                 age = now - create_key_date
-                if int(age.days) >= int(days):
+                diffrence_age = int(age.total_seconds())
+                if diffrence_age >= int(age_seconds):
                     # 기간이 지난 IAM Access Key의 정보 저장.
                     user_info = {
                         "access_key_id": key['AccessKeyId'],
                         "user_name": username,
                         "user_arn": arn,
-                        "create_key_date": create_key_date.strftime("%Y-%m-%d %H:%M:%S"),
-                        "create_key_age": age.days,
-                        "create_key_desc": f"It created {age.days} days ago!!"
+                        "created_key_date": create_key_date.strftime("%Y-%m-%d %H:%M:%S"),
+                        "created_key_hours": diffrence_age // 3600,
+                        "created_key_desc": f"It created {convert_seconds(diffrence_age)} ago!!"
                     }
     except Exception as e:
         print(f"IAM 사용자 {username}의 Access Key를 가져올 수 없습니다. 오류: {str(e)}")
     return user_info
 
 
-def get_users_old_access_keys(days=90):
+def get_users_old_access_keys(age_seconds=7776000):
     try:
         old_keys_info = []
         response = iam_client.list_users()
         users = response['Users']
         for user in users:
             username = user['UserName']
-            user_key_info = keys_filter(username, user['Arn'], days)
+            user_key_info = keys_filter(username, user['Arn'], age_seconds)
             if user_key_info:
                 old_keys_info.append(user_key_info)
     except Exception as e:
@@ -63,9 +91,21 @@ def get_users_old_access_keys(days=90):
     return old_keys_info
 
 
-@app.get("/old-key-age")
-async def list_old_access_keys(days: int):
-    old_keys_info = get_users_old_access_keys(days)
+@app.get("/old-key-age/")
+async def list_old_access_keys(
+        days: int = Query(None, title="Days", description="Number of days"),
+        hours: int = Query(None, title="Hours", description="Number of hours"),
+        mins: int = Query(None, title="Mins", description="Number of mins"),
+        seconds: int = Query(None, title="Seconds",
+                             description="Number of seconds")
+):
+    age_seconds = 0
+    input_times = [days, hours, mins, seconds]
+    conversions = [86400, 3600, 60, 1]  # 일, 시간, 분, 초의 변환값
+    for unit, conversion in zip(input_times, conversions):
+        if unit is not None:
+            age_seconds += unit * conversion
+    old_keys_info = get_users_old_access_keys(age_seconds)
     return {"old_created_keys": old_keys_info}
 
 if __name__ == '__main__':

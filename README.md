@@ -1,6 +1,6 @@
 # # Intro
 
-AWS IAM User들의 주어진 만료일이 지난 Access Key 리스트를 확인하는 API 서버 입니다.
+AWS IAM User들의 주어진 만료(일/시간/분/초)가 지난 Access Key 리스트를 확인하는 API 서버 입니다.
 
 API 서버는 Python으로 작성되었으며 아래 환경에서 작성 및 테스트 되었습니다.
 
@@ -72,7 +72,7 @@ fba77de791de   checkiam:dev   "uvicorn app.main:ap…"   5 minutes ago   Up 5 mi
 
 ```bash
 ~/shoespic $ curl -X 'GET' \
-  'http://127.0.0.1:30080/old-key-age?days=90' \
+  'http://127.0.0.1:30080/old-key-age?hours=2160' \
   -H 'accept: application/json'
 ```
 
@@ -83,7 +83,7 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 ```
 
 #### Response: Body
-`days`를 `90`으로 요청시 JSON형식으로 90일 이상된 Key들의 정보를 반환 합니다.
+`hours`를 `2160`으로 요청시 JSON형식으로 90일 이상된 Key들의 정보를 반환 합니다.
 ```json
 {
   "old_created_keys": [
@@ -91,9 +91,9 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
       "access_key_id": "************************",
       "user_name": "******",
       "user_arn": "arn:aws:iam::************:user/******",
-      "create_key_date": "2021-06-14 10:00:35",
-      "create_key_age": 812,
-      "create_key_desc": "It created 812 days ago!!"
+      "created_key_date": "2021-06-14 10:00:35",
+      "created_key_hours": 19527,
+      "created_key_desc": "It created 813 Days, 15 Hours, 17 Mins, 58 Seconds ago!!"
     },
     ...
     {
@@ -164,7 +164,7 @@ kubectl apply -f -
 
 ```bash
 ~/shoespic $ curl -X 'GET' \
-  'http://127.0.0.1:30080/old-key-age?days=90' \
+  'http://127.0.0.1:30080/old-key-age?hours=2160' \
   -H 'accept: application/json'
 ```
 
@@ -175,7 +175,7 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 ```
 
 #### Response: Body
-`days`를 `90`으로 요청시 JSON형식으로 90일 이상된 Key들의 정보를 반환 합니다.
+`hours`를 `2160`으로 요청시 JSON형식으로 90일 이상된 Key들의 정보를 반환 합니다.
 ```json
 {
   "old_created_keys": [
@@ -183,9 +183,9 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
       "access_key_id": "************************",
       "user_name": "******",
       "user_arn": "arn:aws:iam::************:user/******",
-      "create_key_date": "2021-06-14 10:00:35",
-      "create_key_age": 812,
-      "create_key_desc": "It created 812 days ago!!"
+      "created_key_date": "2021-06-14 10:00:35",
+      "created_key_hours": 19527,
+      "created_key_desc": "It created 813 Days, 15 Hours, 17 Mins, 58 Seconds ago!!"
     },
     ...
     {
@@ -245,6 +245,7 @@ AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
 
 * Gunicorn 웹서버를 실행합니다. (개발모드로!!)
 ```bash
+~/shoespic $ source .env
 ~/shoespic $ uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 ```
 
@@ -252,10 +253,10 @@ AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
 <ul>
 
 ## `curl` 로 테스트 합니다.
-
+* 120일 12시간(2892시간)이 지난 Access Key 리스트를 요청 합니다.
 ```bash
 ~/shoespic $ curl -X 'GET' \
-  'http://127.0.0.1:5000/old-key-age?days=90' \
+  'http://127.0.0.1:5000/old-key-age/?days=120&hours=12' \
   -H 'accept: application/json'
 ```
 
@@ -267,7 +268,7 @@ AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
 ```
 
 ## Response: Body
-* `days`를 `90`으로 요청시 JSON형식으로 90일 이상된 Key들의 정보를 반환 합니다.
+* `hours`를 `2160`으로 요청시 JSON형식으로 90일 이상된 Key들의 정보를 반환 합니다.
 ```json
 {
   "old_created_keys": [
@@ -275,9 +276,9 @@ AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
       "access_key_id": "************************",
       "user_name": "******",
       "user_arn": "arn:aws:iam::************:user/******",
-      "create_key_date": "2021-06-14 10:00:35",
-      "create_key_age": 812,
-      "create_key_desc": "It created 812 days ago!!"
+      "created_key_date": "2021-06-14 10:00:35",
+      "created_key_hours": 19527,
+      "created_key_desc": "It created 813 Days, 15 Hours, 17 Mins, 58 Seconds ago!!"
     },
     ...
     {
