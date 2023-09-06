@@ -85,7 +85,7 @@ def get_users_old_access_keys(age_seconds=7776000):
     return old_keys_info
 
 
-@app.get("/old-key-age/")  # 쿼리가 없으면 None을 기본값으로 합니다.
+@app.get("/old-key-age")  # 쿼리가 없으면 None을 기본값으로 합니다.
 async def list_old_access_keys(
         days: int = Query(None, title="Days", description="Number of days"),
         hours: int = Query(None, title="Hours", description="Number of hours"),

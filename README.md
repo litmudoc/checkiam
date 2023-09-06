@@ -256,7 +256,7 @@ AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
 * 120일 12시간(2892시간)이 지난 Access Key 리스트를 요청 합니다.
 ```bash
 ~/shoespic $ curl -X 'GET' \
-  'http://127.0.0.1:5000/old-key-age/?days=120&hours=12' \
+  'http://127.0.0.1:5000/old-key-age?days=120&hours=12' \
   -H 'accept: application/json'
 ```
 
