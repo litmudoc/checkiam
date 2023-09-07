@@ -241,6 +241,7 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 AWS_ACCESS_KEY_ID=___{{Replace AWS Access Key}}___
 AWS_SECRET_ACCESS_KEY=___{{Replace AWS Secret Key}}___
 AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
+EOF
 ```
 
 * Gunicorn 웹서버를 실행합니다. (개발모드로!!)
