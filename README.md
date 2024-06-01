@@ -32,15 +32,15 @@ API 서버는 Python으로 작성되었으며 아래 환경에서 작성 및 테
 ### 1. Source download
 소스를 다운로드 받습니다.
 ```bash
-~ $ git clone https://github.com/litmudoc/shoespic.git
-~ $ cd shoespic
-~/shoespic $
+~ $ git clone https://github.com/litmudoc/checkiam.git
+~ $ cd checkiam
+~/checkiam $
 ```
 ### 2. AWS API Key configure
 준비된 AWS Access Key와 Secret Key를 프로젝트 루트에 `.env` 파일로 저장합니다.
 ```bash
 ## 따옴표와 공백이 들어가지 않도록 주의 하세요. (에러가 나실꺼에요!!)
-~/shoespic $ cat <<EOF >.env
+~/checkiam $ cat <<EOF >.env
 AWS_ACCESS_KEY_ID=___{{Replace AWS Access Key}}___
 AWS_SECRET_ACCESS_KEY=___{{Replace AWS Secret Key}}___
 AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
@@ -50,8 +50,8 @@ EOF
 ### 3. Docker Image build
 도커 이미지를 생성하고 확인합니다.
 ```bash
-~/shoespic $ docker build -t checkiam:dev .
-~/shoespic $ docker image ls
+~/checkiam $ docker build -t checkiam:dev .
+~/checkiam $ docker image ls
 REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
 checkiam     dev       8c34269b42b9   4 minutes ago   260MB
 ```
@@ -59,8 +59,8 @@ checkiam     dev       8c34269b42b9   4 minutes ago   260MB
 ### 4. deploy Docker container (with .env)
 생성된 이미지와 환경변수로 컨테이너를 생성하고 확인합니다.
 ```bash
-~/shoespic $ docker run -d --env-file ./.env --name checkiam -p 30080:5000 checkiam:dev
-~/shoespic $ docker ps         
+~/checkiam $ docker run -d --env-file ./.env --name checkiam -p 30080:5000 checkiam:dev
+~/checkiam $ docker ps         
 CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS          PORTS                     NAMES
 fba77de791de   checkiam:dev   "uvicorn app.main:ap…"   5 minutes ago   Up 5 minutes   0.0.0.0:30080->5000/tcp   checkiam
 ```
@@ -71,7 +71,7 @@ fba77de791de   checkiam:dev   "uvicorn app.main:ap…"   5 minutes ago   Up 5 mi
 #### Use: `curl` command
 
 ```bash
-~/shoespic $ curl -X 'GET' \
+~/checkiam $ curl -X 'GET' \
   'http://127.0.0.1:30080/old-key-age?hours=2160' \
   -H 'accept: application/json'
 ```
@@ -79,7 +79,7 @@ fba77de791de   checkiam:dev   "uvicorn app.main:ap…"   5 minutes ago   Up 5 mi
 #### Use: Swagger UI
 Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다. 
 ``` bash
-~/shoespic $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_get
+~/checkiam $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_get
 ```
 
 #### Response: Body
@@ -108,9 +108,9 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 ### 6. Docker Cleanup
 도커 컨테이너와 이미지를 삭제 합니다.
 ```bash
-~/shoespic $ docker stop checkiam
-~/shoespic $ docker rm checkiam
-~/shoespic $ docker rmi checkiam:dev
+~/checkiam $ docker stop checkiam
+~/checkiam $ docker rm checkiam
+~/checkiam $ docker rmi checkiam:dev
 ```
 
 </ul>
@@ -124,15 +124,15 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 ### 1. Source download
 소스를 다운로드 받습니다.
 ```bash
-~ $ git clone https://github.com/litmudoc/shoespic.git
-~ $ cd shoespic
-~/shoespic $
+~ $ git clone https://github.com/litmudoc/checkiam.git
+~ $ cd checkiam
+~/checkiam $
 ```
 ### 2. AWS API Key configure
 준비된 AWS Access Key와 Secret Key를 프로젝트 루트에 `.env` 파일로 저장합니다.
 ```bash
 ## 따옴표와 공백이 들어가지 않도록 주의 하세요. (에러가 나실꺼에요!!)
-~/shoespic $ cat <<EOF >.env
+~/checkiam $ cat <<EOF >.env
 AWS_ACCESS_KEY_ID=___{{Replace AWS Access Key}}___
 AWS_SECRET_ACCESS_KEY=___{{Replace AWS Secret Key}}___
 AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
@@ -142,8 +142,8 @@ EOF
 ### 3. Docker Image build
 도커 이미지를 생성하고 확인합니다.
 ```bash
-~/shoespic $ docker build -t checkiam:dev .
-~/shoespic $ docker image ls
+~/checkiam $ docker build -t checkiam:dev .
+~/checkiam $ docker image ls
 REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
 checkiam     dev       8c34269b42b9   4 minutes ago   260MB
 ```
@@ -151,7 +151,7 @@ checkiam     dev       8c34269b42b9   4 minutes ago   260MB
 ### 4. Deploy k8s deployment (with .env)
 k8s에 배포될때 민감정보가 노출되지 않도록 스크립트로 배포 합니다.
 ```bash
-~/shoespic $ sed "s#___AWS_ACCESS_KEY_ID___#`awk -F '=' '/AWS_ACCESS_KEY_ID/ {print $2}' ./.env | base64`#g" ./deploy/checkiam.yaml| \
+~/checkiam $ sed "s#___AWS_ACCESS_KEY_ID___#`awk -F '=' '/AWS_ACCESS_KEY_ID/ {print $2}' ./.env | base64`#g" ./deploy/checkiam.yaml| \
 sed "s#___AWS_SECRET_ACCESS_KEY___#`awk -F '=' '/AWS_SECRET_ACCESS_KEY/ {print $2}' ./.env | base64`#g" | \
 sed "s#___AWS_DEFAULT_REGION___#`awk -F '=' '/AWS_DEFAULT_REGION/ {print $2}' ./.env | base64`#g" | \
 kubectl apply -f -
@@ -163,7 +163,7 @@ kubectl apply -f -
 #### Use: `curl` command
 
 ```bash
-~/shoespic $ curl -X 'GET' \
+~/checkiam $ curl -X 'GET' \
   'http://127.0.0.1:30080/old-key-age?hours=2160' \
   -H 'accept: application/json'
 ```
@@ -171,7 +171,7 @@ kubectl apply -f -
 #### Use: Swagger UI
 Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다. 
 ``` bash
-~/shoespic $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_get
+~/checkiam $ open http://127.0.0.1:30080/docs#/default/list_old_access_keys_old_key_age_get
 ```
 
 #### Response: Body
@@ -200,8 +200,8 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 ### 6. K8s Cleanup
 배포된 쿠버네티스 리소스와 도커 이미지를 삭제 합니다.
 ```bash
-~/shoespic $ kubectl delete -f deploy/checkiam.yaml
-~/shoespic $ docker rmi checkiam:dev
+~/checkiam $ kubectl delete -f deploy/checkiam.yaml
+~/checkiam $ docker rmi checkiam:dev
 
 ```
 
@@ -220,15 +220,15 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 * github 에서 소스를 다운로드 받습니다.
 ```bash
 ~ $ cd ~
-~ $ git clone https://github.com/litmudoc/shoespic.git
-~ $ cd shoespic
+~ $ git clone https://github.com/litmudoc/checkiam.git
+~ $ cd checkiam
 ```
 
 ## 2. Python Lib Install
 
 * 필요 Python 라이브러리를 설치 합니다.
 ```bash
-~/shoespic $ pip install -r requirements.txt
+~/checkiam $ pip install -r requirements.txt
 ```
 
 
@@ -237,7 +237,7 @@ Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다.
 
 ```bash
 ## 따옴표와 공백이 들어가지 않도록 주의 하세요. (에러가 나실꺼에요!!)
-~/shoespic $ cat <<EOF >.env
+~/checkiam $ cat <<EOF >.env
 AWS_ACCESS_KEY_ID=___{{Replace AWS Access Key}}___
 AWS_SECRET_ACCESS_KEY=___{{Replace AWS Secret Key}}___
 AWS_DEFAULT_REGION=___{{Replace AWS Default region}}___
@@ -246,8 +246,8 @@ EOF
 
 * Gunicorn 웹서버를 실행합니다. (개발모드로!!)
 ```bash
-~/shoespic $ source .env
-~/shoespic $ uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
+~/checkiam $ source .env
+~/checkiam $ uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 ```
 
 ## 4. API Test
@@ -256,7 +256,7 @@ EOF
 ## `curl` 로 테스트 합니다.
 * 120일 12시간(2892시간)이 지난 Access Key 리스트를 요청 합니다.
 ```bash
-~/shoespic $ curl -X 'GET' \
+~/checkiam $ curl -X 'GET' \
   'http://127.0.0.1:5000/old-key-age?days=120&hours=12' \
   -H 'accept: application/json'
 ```
@@ -265,7 +265,7 @@ EOF
 - Swagger Web UI에서 `/old-key-age` api를 테스트(Try it out) 합니다. 
 
 ```bash
-~/shoespic $ open http://127.0.0.1:5000/docs
+~/checkiam $ open http://127.0.0.1:5000/docs
 ```
 
 ## Response: Body
